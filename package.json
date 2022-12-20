@@ -1,0 +1,27 @@
+{
+    "name": "javascript-node-postgres-2",
+    "version": "1.0.0",
+    "main": "index.js",
+    "devDependencies": {
+      "nodemon": "^2.0.20"
+    },
+    "type": "module",
+    "scripts": {
+      "build": "node ./client/scripts/build.js",
+      "start": "node index.js",
+      "dev": "nodemon index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+      "cookie-parser": "^1.4.6",
+      "dotenv": "^16.0.3",
+      "express": "^4.18.2",
+      "express-session": "^1.17.3",
+      "helmet": "^6.0.1",
+      "pg": "^8.8.0"
+    }
+  }
+  
