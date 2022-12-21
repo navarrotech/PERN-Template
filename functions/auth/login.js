@@ -1,5 +1,3 @@
-console.log("Initialized login.js!")
-
 module.exports = function(req, res){
-
+    res.send({ message:"Good job" })
 }

@@ -10,7 +10,12 @@ function setupDirectory(pathname, app, history=[]){
             return setupDirectory(file_path, app, [ ...history, file_name ])
         }
         // If it's a file, initialize it!
-        app.post(history.join('/') + '/' + file_name, require(path.join('../', file_path)))
+        let url = '/' + path.join(history.join('/'), file_name),
+            fn  = require(path.join('../', file_path));
+
+        if(url.endsWith('.js')){ url = url.slice(0, -3) }
+
+        app.post(url, fn)
     });
 }
 

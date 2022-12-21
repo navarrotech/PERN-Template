@@ -3,7 +3,7 @@ require('dotenv').config() // Load environment file
 const GenerateApp = require('./scripts/GenerateApp.js')
 const ServeFunctions = require('./scripts/Functions.js')
 
-const { PORT=3000, NODE_ENV='development' } = process.env;
+const { PORT=8080, NODE_ENV='development' } = process.env;
 
 const app = GenerateApp()
 

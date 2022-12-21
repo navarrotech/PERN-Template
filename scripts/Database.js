@@ -7,4 +7,4 @@ pool.on('error', (err, client) => {
     // process.exit(-1)
 })
 
-export default pool
+module.exports = pool
