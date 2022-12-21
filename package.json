@@ -9,6 +9,7 @@
     "scripts": {
         "build": "cd ./client && npm install && npm run build",
         "start": "node index.js",
+        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true --DATABASE_URL=postgres://postgres:Jaime@localhost:5432/postgres",
         "dev": "nodemon index.js"
     },
     "keywords": [],
@@ -23,6 +24,7 @@
         "express": "^4.18.2",
         "express-session": "^1.17.3",
         "helmet": "^6.0.1",
+        "minimist": "^1.2.7",
         "pg": "^8.8.0"
     }
 }
