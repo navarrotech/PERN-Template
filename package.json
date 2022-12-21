@@ -5,7 +5,7 @@
     "devDependencies": {
       "nodemon": "^2.0.20"
     },
-    "type": "module",
+    "type": "commonjs",
     "scripts": {
       "build": "node ./client/scripts/build.js",
       "start": "node index.js",

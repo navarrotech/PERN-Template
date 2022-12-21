@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "formulahendry.auto-rename-tag",
+        "mikestead.dotenv",
+        "dsznajder.es7-react-js-snippets",
+        "oliversturm.fix-json",
+        "wscats.qf",
+        "syler.sass-indented"
+    ]
+}

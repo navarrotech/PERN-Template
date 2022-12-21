@@ -1,8 +1,8 @@
-import express from 'express'
-import helmet from 'helmet'
-import cookieParser from 'cookie-parser'
+const express = require('express')
+const helmet = require('helmet')
+const cookieParser = require('cookie-parser')
 
-export default function(){
+module.exports = function(){
     const app = express()
 
     app.use(express.static('./client/build'));
