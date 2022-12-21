@@ -1,6 +1,9 @@
 import { createContext, useState, useEffect } from "react"
 import { useLocation } from 'react-router'
+
 import Loader from "../common/Loader.jsx"
+
+import axios from 'axios'
 
 const Context = createContext()
 
@@ -25,6 +28,16 @@ export function UserProvider({ children }) {
                 }
             })
         }
+        axios
+            .post('/auth/getAuth')
+            .catch(e => {
+                console.log(e)
+                // Put 401 catch in, to redirect back to '/'
+                Promise.reject(e)
+            })
+            .then(({ data:{ user }={} }) => {
+                setSubstate(user)
+            })
     }, [location])
 
     if (state.loading) {

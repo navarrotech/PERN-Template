@@ -2,18 +2,15 @@
     "name": "javascript-node-postgres-2",
     "version": "1.0.0",
     "main": "index.js",
-    "devDependencies": {
-        "nodemon": "^2.0.20"
-    },
-    "type": "commonjs",
     "scripts": {
         "build": "cd ./client && npm install && npm run build",
         "start": "node index.js",
-        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true --DATABASE_URL=postgres://postgres:Jaime@localhost:5432/postgres",
+        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true",
         "dev": "nodemon index.js"
     },
-    "keywords": [],
-    "author": "",
+    "type": "commonjs",
+    "keywords": [ "NavarroTech" ],
+    "author": "Alex Navarro @NavarroTech",
     "license": "ISC",
     "description": "",
     "dependencies": {
@@ -25,6 +22,10 @@
         "express-session": "^1.17.3",
         "helmet": "^6.0.1",
         "minimist": "^1.2.7",
+        "password-hash": "^1.2.2",
         "pg": "^8.8.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.20"
     }
 }
