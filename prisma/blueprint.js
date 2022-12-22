@@ -1,11 +1,11 @@
-require('dotenv').config({ path:'../.env' })
+require('dotenv').config({ path:__dirname + '/../.env' })
 const argv = require('minimist')(process.argv.slice(2));
 const fs = require('fs')
 const path = require('path')
 
 
 let { DATABASE_URL } = process.env
-const { schema:schema_path, s, verbose=false, DATABASE_URL:CLI_URL, outputClient } = argv
+const { schema:schema_path, s, verbose=false, DATABASE_URL:CLI_URL, outputClient, skipTableGeneration=false } = argv
 
 if(CLI_URL){ DATABASE_URL = CLI_URL }
 
@@ -43,45 +43,47 @@ async function _init(){
     if(verbose){ console.log("PostgreSQL Successfully Connected!") }
     
     // Table generation and column validation
-    Object
-        .keys(schema.tables)
-        .forEach(table_name => {
-            let sql_query = 'CREATE TABLE IF NOT EXISTS "' + table_name + '"(';
-            let table = schema.tables[table_name]
-
-            sql_query += Object
-                .keys(table)
-                .map(column_name => {
-                    let column = table[column_name]
-
-                    if(!column.type){ throw new Error(`No column type found for column ${column_name} in table ${table_name}`) }
-                    
-                    let sql_column = `${verbose?'\n\t':''}${column_name} ${column.type}`
-
-                    // To add "not null"
-                    if(column.null === false){ sql_column += ' NOT NULL' }
-                    // To add "Default NULL" or "default (value)"
-                    if(column.default !== undefined){
-                        sql_column += column.default === null ? ' DEFAULT NULL' : ' DEFAULT ' + column.default
-                    }
-                    // Primary key
-                    if(column.primaryKey){ sql_column += ' PRIMARY KEY' }
-                    // Postfix, anything to add before it gets sent off for good.
-                    if(column.postFix){ sql_column += ' ' +  column.postFix }
-
-                    return sql_column
-                })
-                .join(',')
-
-            sql_query += verbose?'\n);':');'
-
-            promises.push(Postgres.query(sql_query))
-
-            if(verbose){
-                console.log("  > Created table " + table_name)
-                console.log(sql_query)
-            }
-        })
+    if(!skipTableGeneration){
+        Object
+            .keys(schema.tables)
+            .forEach(table_name => {
+                let sql_query = 'CREATE TABLE IF NOT EXISTS "' + table_name + '"(';
+                let table = schema.tables[table_name]
+    
+                sql_query += Object
+                    .keys(table)
+                    .map(column_name => {
+                        let column = table[column_name]
+    
+                        if(!column.type){ throw new Error(`No column type found for column ${column_name} in table ${table_name}`) }
+                        
+                        let sql_column = `${verbose?'\n\t':''}${column_name} ${column.type}`
+    
+                        // To add "not null"
+                        if(column.null === false){ sql_column += ' NOT NULL' }
+                        // To add "Default NULL" or "default (value)"
+                        if(column.default !== undefined){
+                            sql_column += column.default === null ? ' DEFAULT NULL' : ' DEFAULT ' + column.default
+                        }
+                        // Primary key
+                        if(column.primaryKey){ sql_column += ' PRIMARY KEY' }
+                        // Postfix, anything to add before it gets sent off for good.
+                        if(column.postFix){ sql_column += ' ' +  column.postFix }
+    
+                        return sql_column
+                    })
+                    .join(',')
+    
+                sql_query += verbose?'\n);':');'
+    
+                promises.push(Postgres.query(sql_query))
+    
+                if(verbose){
+                    console.log("  > Created table " + table_name)
+                    console.log(sql_query)
+                }
+            })
+    }
 
     // Function generation
     if(schema.functions){
@@ -122,21 +124,38 @@ async function _init(){
     await Postgres.end()
 }
 
-async function _generateClient(){
-    if(!outputClient){ return; }
-
-    let client = {}
-    
-
-    fs.writeFileSync(outputClient, JSON.stringify(client, null, 4), 'utf8')
-}
-
 _init()
 .catch(console.log)
 .finally(() => {
-    console.log("Blueprint finsihed.")
+    console.log("Blueprint finished.")
     process.exit(0)
 })
 
-// SET DATABASE
+// Set React Client Variables
+if(outputClient){
+    const template_file = fs.readFileSync(path.join(__dirname, './react_database_client_template.js'))
 
+    let client_file = template_file + '\n\nconst database =  {\n'
+    Object.keys(schema.tables)
+    .forEach(key => {
+        client_file += `\t${key}: {
+        get:  get('${key}'),
+        set:  set('${key}'),
+        push: push('${key}')
+    },`
+    })
+    
+
+    client_file += '\n}\n\nexport default database'
+    
+
+    // client = `const tables = ${client};\n\nexport default tables;`
+
+    const outputClientDir  = path.join(__dirname, outputClient.substring(0, outputClient.lastIndexOf('/')))
+    const outputClientFile = path.join(__dirname, outputClient)
+
+    if (!fs.existsSync(outputClientDir)){
+        fs.mkdirSync(outputClientDir, { recursive: true });
+    }
+    fs.writeFileSync(outputClientFile, client_file, 'utf8')
+}

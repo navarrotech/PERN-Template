@@ -1,4 +1,4 @@
-const database = require('../../scripts/Database.js')
+const database = require('../../Database.js')
 const passwordHash = require('password-hash');
 
 module.exports = async function(req, res){

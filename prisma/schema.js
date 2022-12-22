@@ -1,6 +1,6 @@
 module.exports = {
     tables: {
-        "users": {
+        users: {
             id      : { type: 'int', null: false, primaryKey: true },
             name    : { type: 'varchar(45)', default: null },
             email   : { type: 'varchar(60)', default: null, unique: true },
@@ -8,6 +8,24 @@ module.exports = {
             created : { type: 'timestamp', default: 'current_timestamp' },
             updated : { type: 'timestamp', default: 'current_timestamp' }
         }
+    },
+    security:{
+        users: {
+            read:  function(request, session, params){
+                return {
+                    where: {
+                        id: session.user.id
+                    }
+                }
+            },
+            write: function(request, session, params){
+                return {
+                    where: {
+                        id: session.user.id
+                    }
+                }
+            }
+        },
     },
     functions: {
         update_timestamp: `()

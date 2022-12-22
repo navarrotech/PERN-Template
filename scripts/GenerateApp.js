@@ -1,18 +1,16 @@
 const express = require('express')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
-const session = require('express-session')
-const PGStore = require('connect-pg-simple')(session)
-
-const PG_Pool = require('./Database.js')
+const session = require('./Session.js')
 
 const { NODE_ENV='developemnt' } = process.env
 
 module.exports = function(){
     const app = express()
 
-    if(NODE_ENV === 'production'){
+    if(NODE_ENV !== 'production'){
         app.use('*', cors({
             origin: true,
             credentials:true
@@ -37,24 +35,7 @@ module.exports = function(){
     });
 
 
-    app.use(session({
-        secret: 'kuaecuXRemBJpuuNeuBXjijaaixejXBR',
-        name: 'sid',
-        resave: true, // Save even if nothing is changed
-        saveUninitialized: false, // Save even if nothing has been set in req.session yet
-        rolling: true,
-        cookie: {
-            secure: NODE_ENV === 'production',
-            httpOnly: true,
-            sameSite: true,
-            maxAge: 1000 * 60 * 60 * 4 // 4 hours
-        },
-        store: new PGStore({
-            pool: PG_Pool,
-            createTableIfMissing: true,
-            tableName : 'sessions'
-        })
-    }))
+    app.use(session)
 
     return app
 }

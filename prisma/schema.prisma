@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model sessions {
+  sid    String   @id(map: "session_pkey") @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+
+model users {
+  id       Int       @id
+  name     String?   @db.VarChar(45)
+  email    String    @db.VarChar(60) @unique
+  password String    @db.VarChar(60)
+  created  DateTime? @default(now()) @db.Timestamp(6)
+  updated  DateTime? @default(now()) @db.Timestamp(6)
+}

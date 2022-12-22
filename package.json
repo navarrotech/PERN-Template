@@ -3,17 +3,21 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "schema": "npx prisma db push",
         "build": "cd ./client && npm install && npm run build",
         "start": "node index.js",
-        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true --outputClient ../client/src/database/client.js",
+        "blueprint": "node ./prisma/blueprint.js --schema ./schema.js --verbose true --outputClient ../client/src/database/client.js --skipTableGeneration",
         "dev": "nodemon index.js"
     },
     "type": "commonjs",
-    "keywords": [ "NavarroTech" ],
+    "keywords": [
+        "NavarroTech"
+    ],
     "author": "Alex Navarro @NavarroTech",
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "@prisma/client": "^4.8.0",
         "connect-pg-simple": "^8.0.0",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
@@ -23,7 +27,9 @@
         "helmet": "^6.0.1",
         "minimist": "^1.2.7",
         "password-hash": "^1.2.2",
-        "pg": "^8.8.0"
+        "pg": "^8.8.0",
+        "prisma": "^4.8.0",
+        "socket.io": "^4.5.4"
     },
     "devDependencies": {
         "nodemon": "^2.0.20"
