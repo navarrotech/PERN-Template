@@ -1,8 +1,11 @@
 require('dotenv').config({ path:'../.env' })
 const argv = require('minimist')(process.argv.slice(2));
+const fs = require('fs')
+const path = require('path')
+
 
 let { DATABASE_URL } = process.env
-const { schema:schema_path, s, verbose=false, DATABASE_URL:CLI_URL } = argv
+const { schema:schema_path, s, verbose=false, DATABASE_URL:CLI_URL, outputClient } = argv
 
 if(CLI_URL){ DATABASE_URL = CLI_URL }
 
@@ -120,7 +123,12 @@ async function _init(){
 }
 
 async function _generateClient(){
+    if(!outputClient){ return; }
 
+    let client = {}
+    
+
+    fs.writeFileSync(outputClient, JSON.stringify(client, null, 4), 'utf8')
 }
 
 _init()

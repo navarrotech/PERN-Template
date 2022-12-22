@@ -5,7 +5,7 @@
     "scripts": {
         "build": "cd ./client && npm install && npm run build",
         "start": "node index.js",
-        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true",
+        "blueprint": "node ./scaffolding/blueprint.js --schema ./schema.js --verbose true --outputClient ../client/src/database/client.js",
         "dev": "nodemon index.js"
     },
     "type": "commonjs",
