@@ -141,7 +141,8 @@ if(outputClient){
         client_file += `\t${key}: {
         get:  get('${key}'),
         set:  set('${key}'),
-        push: push('${key}')
+        push: push('${key}'),
+        onValue: onValue('${key}')
     },`
     })
     

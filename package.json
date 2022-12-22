@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "schema": "npx prisma db push",
-        "build": "cd ./client && npm install && npm run build",
+        "build": "npm run schema && cd ./client && npm install && npm run build",
         "start": "node index.js",
         "blueprint": "node ./prisma/blueprint.js --schema ./schema.js --verbose true --outputClient ../client/src/database/client.js --skipTableGeneration",
         "dev": "nodemon index.js"

@@ -12,18 +12,24 @@ module.exports = {
     security:{
         users: {
             read:  function(request, session, params){
-                return {
-                    where: {
-                        id: session.user.id
+                if(session && session.user && session.user.id){
+                    return {
+                        where: {
+                            id: session.user.id
+                        }
                     }
                 }
+                return false;
             },
             write: function(request, session, params){
-                return {
-                    where: {
-                        id: session.user.id
+                if(session && session.user && session.user.id){
+                    return {
+                        where: {
+                            id: session.user.id
+                        }
                     }
                 }
+                return false;
             }
         },
     },
