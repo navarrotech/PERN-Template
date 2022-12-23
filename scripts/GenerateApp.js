@@ -2,10 +2,17 @@ const express = require('express')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const rateLimit = require('express-rate-limit')
 
 const session = require('./Session.js')
 
 const { NODE_ENV='developemnt' } = process.env
+
+const apiLimiter = rateLimit({
+    windowMs       : 15 * 60 * 1000,    // 15 minutes
+    max            : 300,               // Limit each IP to 300 requests per `window` (here, per 15 minutes) (20 requests per minute)
+    standardHeaders: true,              // Return rate limit info in the `RateLimit-*` headers
+})
 
 module.exports = function(){
     const app = express()
@@ -34,7 +41,7 @@ module.exports = function(){
         } else next();
     });
 
-
+    app.use(apiLimiter)
     app.use(session)
 
     return app

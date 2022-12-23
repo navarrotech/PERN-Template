@@ -1,6 +1,6 @@
 module.exports = function(req, res){
     if(req.session && req.session.user){
-        res.send({
+        return res.send({
             user: req.session.user,
             authorized: req.session.authorized
         })

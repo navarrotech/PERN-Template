@@ -1,4 +1,4 @@
 module.exports = async function(req, res){
-    await req.session.destroy()
+    try{ await req.session.destroy() } catch(e){  }
     res.sendStatus(200)
 }

@@ -8,8 +8,8 @@ module.exports = async function(req, res){
         if(!email || !password){
             return res.status(400).send({ message: "Email and password is required in order to login!" })
         }
-    
-        const [ user ] = await database.query(`SELECT * FROM users WHERE email = $1`, [email])
+
+        const user = await database.users.findUnique({ where:{ email } })
     
         // Successful login
         if(user && user.email && passwordHash.verify(password, user.password)) {
@@ -19,13 +19,13 @@ module.exports = async function(req, res){
             await req.session.save()
             res.status(200).send({ user, authorized:true })
         }
-        // Invalid email
-        else if (user){
-            res.status(401).send({ message:"User not found, did you mean to signup instead?", redirect: '/signup' })
-        }
         // Invalid password
-        else {
+        else if (user){
             res.status(401).send({ message:"Invalid password, please try again!" })
+        }
+        // Invalid email
+        else {
+            res.status(404).send({ message:"A user with that email does not exist, did you mean to signup instead?" })
         }
     } catch(e){
         console.log(e)

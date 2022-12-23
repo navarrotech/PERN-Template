@@ -12,7 +12,6 @@ module.exports = {
     security:{
         users: {
             read:  function(request, session, params){
-                return true;
                 if(session && session.user && session.user.id){
                     return {
                         where: {
@@ -23,7 +22,6 @@ module.exports = {
                 return false;
             },
             write: function(request, session, params){
-                return true;
                 if(session && session.user && session.user.id){
                     return {
                         where: {

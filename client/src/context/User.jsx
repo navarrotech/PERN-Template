@@ -16,31 +16,27 @@ export function UserProvider({ children }) {
     })
 
     // When the user state changes in the cloud, update it here too.
-    // useEffect(() => {
-    //     function setSubstate(newState) {
-    //         setState((oldState) => {
-    //             return {
-    //                 ...oldState,
-    //                 loading: false,
-    //                 user: [newState, setSubstate]
-    //             }
-    //         })
-    //     }
-    //     axios
-    //         .post('/auth/getAuth')
-    //         .catch(e => {
-    //             console.log(e)
-    //             // Put 401 catch in, to redirect back to '/'
-    //             Promise.reject(e)
-    //         })
-    //         .then(({ data:{ user }={} }) => {
-    //             setSubstate(user)
-    //         })
-    // }, [])
+    useEffect(() => {
+        function setSubstate(newState) {
+            setState((oldState) => {
+                return {
+                    ...oldState,
+                    loading: false,
+                    user: [newState, setSubstate]
+                }
+            })
+        }
+        axios
+            .post('/auth/getAuth')
+            .catch(console.log)
+            .then(({ data:{ user=null }={} }) => {
+                setSubstate(user)
+            })
+    }, [])
 
-    // if (state.loading) {
-    //     return <Loader />
-    // }
+    if (state.loading) {
+        return <Loader />
+    }
 
     return <Context.Provider value={state.user}>{children}</Context.Provider>
 }

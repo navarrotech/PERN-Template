@@ -23,3 +23,9 @@ model users {
   created  DateTime? @default(now()) @db.Timestamp(6)
   updated  DateTime? @default(now()) @db.Timestamp(6)
 }
+
+model forgotPasswords {
+  id       String    @id @default(uuid())
+  email    String    
+  created  DateTime? @default(now()) @db.Timestamp(6)
+}

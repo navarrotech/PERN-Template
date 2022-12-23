@@ -15,7 +15,8 @@ module.exports = async function(req, res){
         // Password encryption
         password = passwordHash.generate(password)
         
-        const [ user ] = await database.query(`INSERT INTO users(name, email, password) VALUES ($1,$2,$3) RETURNING *;`, [name, email, password])
+        // const [ user ] = await database.query(`INSERT INTO users(name, email, password) VALUES ($1,$2,$3) RETURNING *;`, [name, email, password])
+        const user = await database.users.create({ data:{ name, email, password } })
     
         if(user) {
             delete user.password
