@@ -3,32 +3,42 @@ import { v4 as uuid } from 'uuid'
 
 const socket = io(process.env.REACT_APP_API, {
     // withCredentials: true,
-    reconnectionDelayMax: 3000 * 1000
+    reconnectionDelayMax: 2 * 1000
 });
 
 const activeQueries = {}
 
-socket.on('invalid', (message, { id }) => {
-    if(activeQueries[id]){
+socket.on('invalid', (message, { id }={}) => {
+    if(id && activeQueries[id]){
         activeQueries[id](null, { status: "invalid", code:"400", message })
     }
 })
-socket.on('unauthorized', (message, { id }) => {
-    if(activeQueries[id]){
+socket.on('unauthorized', (message, { id }={}) => {
+    if(id && activeQueries[id]){
         activeQueries[id](null, { status: "unauthorized", code:"401", message })
     }
 })
-socket.on('error', (error, { id }) => {
-    if(activeQueries[id]){
+socket.on('error', (error, { id }={}) => {
+    if(id && activeQueries[id]){
         activeQueries[id](null, { status: "error", code:"500", message:error })
     }
 })
 socket.on('value', (value, params) => {
     let { id } = params
+    if(params.isSubscription){ value = (Array.isArray(value)) ? value[0] : value }
     if(activeQueries[id]){
         activeQueries[id](value)
     }
 })
+socket.on('connect', () => { console.log("Connected to Realtime Database"); })
+socket.on('disconnect', () => { console.log("Disconnected to Realtime Database") })
+// Manual reconnection...
+// socket.on('disconnect', () => {
+//     let reconnecting = setInterval(() => {
+//         if(socket.active()){ clearInterval(reconnecting) }
+//         socket.connect()
+//     }, 3000)
+// })
 
 function emit(type, table, query, callback, options={}){
     return new Promise((accept, reject) => {
@@ -62,6 +72,16 @@ function push(table_name){
         return emit('push', table_name, query, callback, options)
     };
 }
+function upsert(table_name){
+    return function(query, callback, options){
+        return emit('upsert', table_name, query, callback, options)
+    };
+}
+function deleteMany(table_name){
+    return function(query, callback, options){
+        return emit('delete', table_name, query, callback, options)
+    };
+}
 function onValue(table){
     return function(query, callback, options={}){
         let id = uuid()
@@ -76,10 +96,12 @@ function onValue(table){
 
 const database =  {
 	users: {
-        get:  get('users'),
-        set:  set('users'),
-        push: push('users'),
-        onValue: onValue('users')
+        get:     get('users'),
+        set:     set('users'),
+        push:    push('users'),
+        onValue: onValue('users'),
+        upsert:  upsert('users'),
+        delete:  deleteMany('users')
     },
 }
 

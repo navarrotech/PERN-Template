@@ -132,17 +132,19 @@ _init()
 })
 
 // Set React Client Variables
-if(outputClient){
+if(outputClient && Object.keys(schema.tables).length){
     const template_file = fs.readFileSync(path.join(__dirname, './react_database_client_template.js'))
 
     let client_file = template_file + '\n\nconst database =  {\n'
     Object.keys(schema.tables)
     .forEach(key => {
         client_file += `\t${key}: {
-        get:  get('${key}'),
-        set:  set('${key}'),
-        push: push('${key}'),
-        onValue: onValue('${key}')
+        get:     get('${key}'),
+        set:     set('${key}'),
+        push:    push('${key}'),
+        onValue: onValue('${key}'),
+        upsert:  upsert('${key}'),
+        delete:  deleteMany('${key}')
     },`
     })
     

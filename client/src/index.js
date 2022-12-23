@@ -20,6 +20,8 @@ import "./sass/index.sass"
 import axios from 'axios'
 import database from 'database/client.js';
 
+import DatabaseTest from 'database/test.jsx'
+
 // Default settings 
 if(process.env.REACT_APP_API){
     axios.defaults.baseURL = process.env.REACT_APP_API
@@ -39,6 +41,7 @@ root.render(
                     {/* <Route path="/" element={<Dashboard />}>
                         <Route path="/dashboard" element={<h1 className="title is-size-1 has-text-centered has-text-primary py-6">Hello world!</h1>}/>
                     </Route> */}
+                    <Route path="/db-test" element={<DatabaseTest />}/>
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </BrowserRouter>
